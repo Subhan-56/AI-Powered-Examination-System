@@ -9,9 +9,9 @@
 ## Login Credentials
 | Role  Username  Password 
 
-| Admin | admin | admin123 |
-| Teacher | raza | raza123 |
-| Student | student1 | 1student |
+| Admin | admin | ******** |
+| Teacher | raza | ******* |
+| Student | student1 | ******** |
 
 ## Run Project
 pip install -r requirements.txt
