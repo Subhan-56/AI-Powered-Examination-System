@@ -1,0 +1,361 @@
+{% extends 'base.html' %}
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block extra_css %}
+<style>
+    .page-header {
+        background: linear-gradient(135deg, #1a5276 0%, #2980b9 100%);
+        border-radius: 16px;
+        padding: 24px 32px;
+        color: white;
+        margin-bottom: 24px;
+        position: relative;
+        overflow: hidden;
+    }
+    .page-header::after {
+        content: '\f0c0';
+        font-family: 'Font Awesome 6 Free';
+        font-weight: 900;
+        position: absolute;
+        right: 30px; top: 50%;
+        transform: translateY(-50%);
+        font-size: 80px;
+        opacity: 0.07;
+    }
+    .stat-card {
+        border-radius: 14px;
+        border: none;
+        box-shadow: 0 2px 15px rgba(0,0,0,0.07);
+        overflow: hidden;
+        transition: transform 0.25s, box-shadow 0.25s;
+    }
+    .stat-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    }
+    .stat-top {
+        height: 5px;
+    }
+    .stat-body {
+        padding: 22px 20px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+    .stat-icon {
+        width: 54px; height: 54px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+        flex-shrink: 0;
+    }
+    .stat-number {
+        font-size: 1.9rem;
+        font-weight: 800;
+        line-height: 1;
+        margin-bottom: 4px;
+    }
+    .stat-label {
+        font-size: 0.82rem;
+        color: #7f8c8d;
+        font-weight: 500;
+    }
+    .action-btn {
+        border-radius: 10px;
+        padding: 13px 20px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        border: none;
+        transition: all 0.25s;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+    .action-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+    }
+    .section-card {
+        border-radius: 14px;
+        border: none;
+        box-shadow: 0 2px 15px rgba(0,0,0,0.07);
+        overflow: hidden;
+    }
+    .section-header {
+        padding: 14px 20px;
+        font-weight: 700;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        border-bottom: 1px solid #f0f4f8;
+    }
+    .table th {
+        background: #f4f6f9;
+        color: #1a5276;
+        font-weight: 600;
+        font-size: 0.82rem;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+        border: none;
+        padding: 12px 16px;
+    }
+    .table td {
+        padding: 12px 16px;
+        vertical-align: middle;
+        font-size: 0.88rem;
+        border-color: #f0f4f8;
+    }
+    .table tbody tr:hover {
+        background: #f8fbfe;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="d-flex align-items-center gap-3">
+            <div style="width:50px;height:50px;background:rgba(255,255,255,0.2);
+                        border-radius:12px;display:flex;align-items:center;
+                        justify-content:center;font-size:22px;
+                        border:2px solid rgba(255,255,255,0.3);">
+                <i class="fas fa-user-shield"></i>
+            </div>
+            <div>
+                <h4 class="fw-bold mb-1">Admin Dashboard</h4>
+                <div style="opacity:0.8;font-size:0.87rem;">
+                    <i class="fas fa-cogs me-1"></i>
+                    System Overview &mdash; AI Examination System
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats Row -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-top" style="background:#1a5276;"></div>
+                <div class="stat-body">
+                    <div class="stat-icon" style="background:#eaf2fb;">
+                        <i class="fas fa-user-graduate" style="color:#1a5276;"></i>
+                    </div>
+                    <div>
+                        <div class="stat-number" style="color:#1a5276;">
+                            {{ total_students }}
+                        </div>
+                        <div class="stat-label">Total Students</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-top" style="background:#1e8449;"></div>
+                <div class="stat-body">
+                    <div class="stat-icon" style="background:#eafaf1;">
+                        <i class="fas fa-chalkboard-teacher" style="color:#1e8449;"></i>
+                    </div>
+                    <div>
+                        <div class="stat-number" style="color:#1e8449;">
+                            {{ total_teachers }}
+                        </div>
+                        <div class="stat-label">Total Teachers</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-top" style="background:#b7950b;"></div>
+                <div class="stat-body">
+                    <div class="stat-icon" style="background:#fef9e7;">
+                        <i class="fas fa-file-alt" style="color:#b7950b;"></i>
+                    </div>
+                    <div>
+                        <div class="stat-number" style="color:#b7950b;">
+                            {{ total_exams }}
+                        </div>
+                        <div class="stat-label">Total Exams</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-top" style="background:#2e86c1;"></div>
+                <div class="stat-body">
+                    <div class="stat-icon" style="background:#eaf4fb;">
+                        <i class="fas fa-pen-alt" style="color:#2e86c1;"></i>
+                    </div>
+                    <div>
+                        <div class="stat-number" style="color:#2e86c1;">
+                            {{ total_attempts }}
+                        </div>
+                        <div class="stat-label">Total Attempts</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-6">
+            <a href="{% url 'manage_users' %}"
+               class="action-btn"
+               style="background:linear-gradient(135deg,#1a5276,#2980b9);color:white;">
+                <i class="fas fa-users"></i> Manage Users
+            </a>
+        </div>
+        <div class="col-md-6">
+            <a href="/admin/"
+               class="action-btn"
+               style="background:linear-gradient(135deg,#9a7d0a,#d4ac0d);color:white;">
+                <i class="fas fa-cog"></i> Django Admin Panel
+            </a>
+        </div>
+
+    </div>
+
+    <!-- Tables Row -->
+    <div class="row g-4">
+
+        <!-- Recent Students -->
+        <div class="col-md-6">
+            <div class="section-card">
+                <div class="section-header" style="color:#1a5276;">
+                    <i class="fas fa-user-graduate" style="color:#1a5276;"></i>
+                    Recent Students
+                </div>
+                <div class="table-responsive">
+                    <table class="table mb-0">
+                        <thead>
+                            <tr>
+                                <th>Username</th>
+                                <th>Email</th>
+                                <th>Joined</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for student in recent_students %}
+                            <tr>
+                                <td>
+                                    <i class="fas fa-user me-1 text-muted"></i>
+                                    <strong>{{ student.username }}</strong>
+                                </td>
+                                <td class="text-muted">
+                                    {{ student.email|truncatechars:22 }}
+                                </td>
+                                <td class="text-muted">
+                                    {{ student.date_joined|date:"M d" }}
+                                </td>
+                                <td>
+                                    {% if student.is_active %}
+                                    <span class="badge"
+                                          style="background:#eafaf1;color:#1e8449;
+                                                 font-weight:600;padding:5px 10px;
+                                                 border-radius:6px;">
+                                        Active
+                                    </span>
+                                    {% else %}
+                                    <span class="badge"
+                                          style="background:#fdecea;color:#cb4335;
+                                                 font-weight:600;padding:5px 10px;
+                                                 border-radius:6px;">
+                                        Inactive
+                                    </span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="4" class="text-center text-muted py-4">
+                                    <i class="fas fa-inbox me-2"></i>No students yet
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Exams -->
+        <div class="col-md-6">
+            <div class="section-card">
+                <div class="section-header" style="color:#b7950b;">
+                    <i class="fas fa-file-alt" style="color:#b7950b;"></i>
+                    Recent Exams
+                </div>
+                <div class="table-responsive">
+                    <table class="table mb-0">
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Teacher</th>
+                                <th>Status</th>
+                                <th>Questions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for exam in recent_exams %}
+                            <tr>
+                                <td>
+                                    <strong>{{ exam.title|truncatechars:22 }}</strong>
+                                </td>
+                                <td class="text-muted">
+                                    {{ exam.teacher.username }}
+                                </td>
+                                <td>
+                                    {% if exam.status == 'published' %}
+                                    <span class="badge"
+                                          style="background:#eafaf1;color:#1e8449;
+                                                 font-weight:600;padding:5px 10px;
+                                                 border-radius:6px;">
+                                        Published
+                                    </span>
+                                    {% elif exam.status == 'draft' %}
+                                    <span class="badge"
+                                          style="background:#fef9e7;color:#b7950b;
+                                                 font-weight:600;padding:5px 10px;
+                                                 border-radius:6px;">
+                                        Draft
+                                    </span>
+                                    {% else %}
+                                    <span class="badge"
+                                          style="background:#f4f6f9;color:#7f8c8d;
+                                                 font-weight:600;padding:5px 10px;
+                                                 border-radius:6px;">
+                                        Closed
+                                    </span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-muted">
+                                    {{ exam.total_questions }}
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="4" class="text-center text-muted py-4">
+                                    <i class="fas fa-inbox me-2"></i>No exams yet
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

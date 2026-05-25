@@ -1,0 +1,231 @@
+{% extends 'base.html' %}
+{% block title %}My Profile{% endblock %}
+
+{% block extra_css %}
+<style>
+    .profile-header {
+        background: linear-gradient(135deg, #1a5276, #2980b9);
+        border-radius: 16px;
+        padding: 32px;
+        color: white;
+        text-align: center;
+        margin-bottom: 24px;
+        position: relative;
+        overflow: hidden;
+    }
+    .profile-header::after {
+        content: '';
+        position: absolute;
+        top: -40px; right: -40px;
+        width: 150px; height: 150px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.06);
+    }
+    .avatar-wrap {
+        width: 80px; height: 80px;
+        background: rgba(255,255,255,0.18);
+        border-radius: 50%;
+        border: 3px solid rgba(255,255,255,0.35);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 30px;
+        margin: 0 auto 16px;
+    }
+    .profile-name {
+        font-size: 1.3rem;
+        font-weight: 700;
+        margin-bottom: 10px;
+    }
+    .role-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 5px 16px;
+        border-radius: 20px;
+        font-size: 0.82rem;
+        font-weight: 600;
+        background: rgba(255,255,255,0.18);
+        border: 1.5px solid rgba(255,255,255,0.3);
+        backdrop-filter: blur(4px);
+    }
+    .form-card {
+        border-radius: 14px;
+        border: none;
+        box-shadow: 0 2px 15px rgba(0,0,0,0.07);
+        padding: 28px 32px;
+    }
+    .section-title {
+        font-size: 1rem;
+        font-weight: 700;
+        color: #1a5276;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding-bottom: 12px;
+        border-bottom: 2px solid #eaf2fb;
+    }
+    .form-label {
+        font-weight: 600;
+        font-size: 0.83rem;
+        color: #2c3e50;
+        margin-bottom: 6px;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+    }
+    .form-control {
+        border: 1.5px solid #dce3ea;
+        border-radius: 8px;
+        padding: 10px 14px;
+        font-size: 0.9rem;
+        background: #f8fbfe;
+        color: #2c3e50;
+    }
+    .form-control:focus {
+        border-color: #2e86c1;
+        background: #fff;
+        box-shadow: 0 0 0 3px rgba(46,134,193,0.12);
+    }
+    .form-control:disabled {
+        background: #f0f4f8;
+        color: #7f8c8d;
+        cursor: not-allowed;
+    }
+    .password-section {
+        background: #f8fbfe;
+        border-radius: 10px;
+        padding: 20px;
+        border: 1.5px dashed #d6e4f0;
+        margin-top: 8px;
+    }
+    .save-btn {
+        background: linear-gradient(135deg, #1a5276, #2980b9);
+        border: none;
+        padding: 12px 32px;
+        font-weight: 600;
+        font-size: 0.95rem;
+        border-radius: 10px;
+        color: white;
+        width: 100%;
+        transition: all 0.3s;
+    }
+    .save-btn:hover {
+        background: linear-gradient(135deg, #154360, #1a5276);
+        transform: translateY(-1px);
+        box-shadow: 0 6px 20px rgba(26,82,118,0.3);
+        color: white;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-7">
+
+            <!-- Profile Header -->
+            <div class="profile-header">
+                <div class="avatar-wrap">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="profile-name">
+                    {{ user.get_full_name|default:user.username }}
+                </div>
+                <div class="role-pill">
+                    <i class="fas fa-id-badge"></i>
+                    {{ user.role|capfirst }}
+                </div>
+            </div>
+
+            <!-- Edit Form -->
+            <div class="form-card">
+                <div class="section-title">
+                    <i class="fas fa-edit"></i> Edit Profile
+                </div>
+
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="row g-3">
+
+                        <div class="col-md-6">
+                            <label class="form-label">First Name</label>
+                            <input type="text" name="first_name"
+                                   class="form-control"
+                                   value="{{ user.first_name }}">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Last Name</label>
+                            <input type="text" name="last_name"
+                                   class="form-control"
+                                   value="{{ user.last_name }}">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Username</label>
+                            <input type="text" class="form-control"
+                                   value="{{ user.username }}" disabled>
+                            <small class="text-muted" style="font-size:0.78rem;">
+                                <i class="fas fa-lock me-1"></i>
+                                Username cannot be changed
+                            </small>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Email Address</label>
+                            <input type="email" name="email"
+                                   class="form-control"
+                                   value="{{ user.email }}">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Phone Number</label>
+                            <input type="text" name="phone"
+                                   class="form-control"
+                                   value="{{ user.phone|default:'' }}"
+                                   placeholder="e.g. 03001234567">
+                        </div>
+
+                        {% if user.role == 'student' %}
+                        <div class="col-md-6">
+                            <label class="form-label">Roll Number</label>
+                            <input type="text" name="roll_number"
+                                   class="form-control"
+                                   value="{{ user.roll_number|default:'' }}"
+                                   placeholder="e.g. F22BSEEN1M01062">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Course / Program</label>
+                            <input type="text" name="course"
+                                   class="form-control"
+                                   value="{{ user.course|default:'' }}"
+                                   placeholder="e.g. BS Software Engineering">
+                        </div>
+                        {% endif %}
+
+                        <!-- Password Section -->
+                        <div class="col-12">
+                            <div class="password-section">
+                                <div class="fw-semibold mb-2"
+                                     style="color:#1a5276;font-size:0.88rem;">
+                                    <i class="fas fa-key me-2"></i>
+                                    Change Password
+                                    <span class="text-muted fw-normal ms-1">
+                                        (optional)
+                                    </span>
+                                </div>
+                                <input type="password" name="new_password"
+                                       class="form-control"
+                                       placeholder="Leave empty to keep current password">
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <button type="submit" class="save-btn mt-4">
+                        <i class="fas fa-save me-2"></i>Save Changes
+                    </button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

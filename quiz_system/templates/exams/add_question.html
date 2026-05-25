@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+{% block title %}Add Questions{% endblock %}
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <!-- Add Question Form -->
+        <div class="col-md-6">
+            <div class="card p-4">
+                <h4 class="fw-bold mb-3">
+                    <i class="fas fa-plus text-primary me-2"></i>Add Question
+                </h4>
+                <p class="text-muted">Exam: <strong>{{ exam.title }}</strong></p>
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Question Text</label>
+                        <textarea name="text" class="form-control" rows="3" 
+                                  placeholder="Write your question here..." required></textarea>
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label fw-semibold">Options</label>
+                        <div class="input-group mb-2">
+                            <span class="input-group-text bg-primary text-white">A</span>
+                            <input type="text" name="option_a" class="form-control" 
+                                   placeholder="Option A" required>
+                        </div>
+                        <div class="input-group mb-2">
+                            <span class="input-group-text bg-success text-white">B</span>
+                            <input type="text" name="option_b" class="form-control" 
+                                   placeholder="Option B" required>
+                        </div>
+                        <div class="input-group mb-2">
+                            <span class="input-group-text bg-warning text-white">C</span>
+                            <input type="text" name="option_c" class="form-control" 
+                                   placeholder="Option C" required>
+                        </div>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text bg-danger text-white">D</span>
+                            <input type="text" name="option_d" class="form-control" 
+                                   placeholder="Option D" required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">Correct Answer</label>
+                            <select name="correct_answer" class="form-select" required>
+                                <option value="A">A</option>
+                                <option value="B">B</option>
+                                <option value="C">C</option>
+                                <option value="D">D</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">Marks</label>
+                            <input type="number" name="marks" class="form-control" 
+                                   value="1" min="1" max="10">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Topic (Optional)</label>
+                        <input type="text" name="topic" class="form-control" 
+                               placeholder="e.g. Python Basics">
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100 py-2">
+                        <i class="fas fa-plus me-2"></i>Add Question
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Questions List -->
+        <div class="col-md-6">
+            <div class="card p-4">
+                <h4 class="fw-bold mb-3">
+                    <i class="fas fa-list text-success me-2"></i>
+                    Questions Added ({{ questions.count }})
+                </h4>
+                {% if questions %}
+                    {% for q in questions %}
+                    <div class="border rounded p-3 mb-2 bg-light">
+                        <div class="d-flex justify-content-between">
+                            <p class="mb-1 fw-semibold">Q{{ forloop.counter }}. {{ q.text|truncatechars:60 }}</p>
+                            <a href="{% url 'delete_question' q.id %}" 
+                               class="text-danger ms-2"
+                               onclick="return confirm('Delete this question?')">
+                                <i class="fas fa-trash"></i>
+                            </a>
+                        </div>
+                        <small class="text-success">
+                            <i class="fas fa-check me-1"></i>Correct: {{ q.correct_answer }} 
+                            | Marks: {{ q.marks }}
+                        </small>
+                    </div>
+                    {% endfor %}
+                    <a href="{% url 'generate_questions' exam.id %}" 
+                            class="btn btn-warning w-100 mb-2">
+                        <i class="fas fa-robot me-2"></i>Generate with AI
+                    </a>
+                {% else %}
+                    <p class="text-muted text-center mt-4">
+                        <i class="fas fa-info-circle me-1"></i>No questions yet. Add from left!
+                    </p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

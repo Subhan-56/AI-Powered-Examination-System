@@ -1,0 +1,316 @@
+{% extends 'base.html' %}
+{% block title %}{{ exam.title }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .exam-header {
+        background: linear-gradient(135deg, #1a5276, #2980b9);
+        border-radius: 14px;
+        padding: 20px 28px;
+        color: white;
+        margin-bottom: 24px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .exam-title-text {
+        font-size: 1.3rem;
+        font-weight: 700;
+        margin-bottom: 4px;
+    }
+
+    .exam-meta {
+        font-size: 0.85rem;
+        opacity: 0.8;
+        display: flex;
+        gap: 16px;
+    }
+
+    .timer-box {
+        background: rgba(255,255,255,0.15);
+        border: 2px solid rgba(255,255,255,0.3);
+        border-radius: 10px;
+        padding: 10px 20px;
+        text-align: center;
+        min-width: 120px;
+        backdrop-filter: blur(4px);
+    }
+
+    .timer-label {
+        font-size: 0.75rem;
+        opacity: 0.8;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 4px;
+    }
+
+    .timer-display {
+        font-size: 1.6rem;
+        font-weight: 800;
+        letter-spacing: 2px;
+    }
+
+    .timer-warning {
+        color: #f1948a;
+        animation: pulse 1s infinite;
+    }
+
+    @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.6; }
+    }
+
+    /* Question Card */
+    .question-card {
+        border-radius: 12px;
+        border: none;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+        margin-bottom: 20px;
+        overflow: hidden;
+    }
+
+    .question-header {
+        background: #f4f6f9;
+        padding: 14px 20px;
+        border-bottom: 1px solid #e8ecf0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .question-number {
+        font-weight: 700;
+        color: #1a5276;
+        font-size: 0.9rem;
+    }
+
+    .question-text {
+        font-size: 0.97rem;
+        font-weight: 600;
+        color: #1c2833;
+    }
+
+    .marks-badge {
+        background: #1a5276;
+        color: white;
+        font-size: 0.75rem;
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-weight: 600;
+    }
+
+    .question-body {
+        padding: 16px 20px;
+    }
+
+    /* Options */
+    .option-item {
+        display: flex;
+        align-items: center;
+        padding: 12px 16px;
+        border: 1.5px solid #e8ecf0;
+        border-radius: 8px;
+        margin-bottom: 10px;
+        cursor: pointer;
+        transition: all 0.2s;
+        background: #fff;
+    }
+
+    .option-item:hover {
+        border-color: #2e86c1;
+        background: #f0f7fd;
+    }
+
+    .option-item input[type="radio"] {
+        display: none;
+    }
+
+    .option-item.selected {
+        border-color: #1a5276;
+        background: #eaf2fb;
+    }
+
+    .option-label-badge {
+        width: 28px; height: 28px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.78rem;
+        font-weight: 700;
+        margin-right: 12px;
+        flex-shrink: 0;
+        color: white;
+    }
+
+    .option-text {
+        font-size: 0.9rem;
+        color: #2c3e50;
+    }
+
+    /* Submit Section */
+    .submit-section {
+        background: white;
+        border-radius: 14px;
+        padding: 24px;
+        text-align: center;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+        margin-bottom: 32px;
+    }
+
+    .submit-note {
+        color: #7f8c8d;
+        font-size: 0.87rem;
+        margin-bottom: 16px;
+    }
+
+    .btn-submit {
+        background: linear-gradient(135deg, #1e8449, #27ae60);
+        border: none;
+        color: white;
+        padding: 14px 48px;
+        font-size: 1rem;
+        font-weight: 700;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+
+    .btn-submit:hover {
+        background: linear-gradient(135deg, #145a32, #1e8449);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(30,132,73,0.35);
+        color: white;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+
+    <!-- Exam Header -->
+    <div class="exam-header">
+        <div>
+            <div class="exam-title-text">{{ exam.title }}</div>
+            <div class="exam-meta">
+                <span><i class="fas fa-question-circle me-1"></i>{{ questions.count }} Questions</span>
+                <span><i class="fas fa-star me-1"></i>{{ exam.total_marks }} Marks</span>
+            </div>
+        </div>
+        <div class="timer-box">
+            <div class="timer-label">
+                <i class="fas fa-clock me-1"></i>Time Left
+            </div>
+            <div class="timer-display" id="time-display">--:--</div>
+        </div>
+    </div>
+
+    <!-- Questions Form -->
+    <form method="POST" action="{% url 'submit_exam' attempt.id %}" id="examForm">
+        {% csrf_token %}
+
+        {% for question in questions %}
+        <div class="question-card">
+            <div class="question-header">
+                <div>
+                    <span class="question-number">Q{{ forloop.counter }}.</span>
+                    <span class="question-text ms-1">{{ question.text }}</span>
+                </div>
+                <span class="marks-badge">
+                    {{ question.marks }} mark{% if question.marks > 1 %}s{% endif %}
+                </span>
+            </div>
+            <div class="question-body">
+
+                <!-- Option A -->
+                <label class="option-item" id="label_{{ question.id }}_A">
+                    <input type="radio" name="question_{{ question.id }}"
+                           value="A" onchange="selectOption(this)">
+                    <span class="option-label-badge" style="background:#1a5276;">A</span>
+                    <span class="option-text">{{ question.option_a }}</span>
+                </label>
+
+                <!-- Option B -->
+                <label class="option-item" id="label_{{ question.id }}_B">
+                    <input type="radio" name="question_{{ question.id }}"
+                           value="B" onchange="selectOption(this)">
+                    <span class="option-label-badge" style="background:#1e8449;">B</span>
+                    <span class="option-text">{{ question.option_b }}</span>
+                </label>
+
+                <!-- Option C -->
+                <label class="option-item" id="label_{{ question.id }}_C">
+                    <input type="radio" name="question_{{ question.id }}"
+                           value="C" onchange="selectOption(this)">
+                    <span class="option-label-badge" style="background:#b7950b;">C</span>
+                    <span class="option-text">{{ question.option_c }}</span>
+                </label>
+
+                <!-- Option D -->
+                <label class="option-item" id="label_{{ question.id }}_D">
+                    <input type="radio" name="question_{{ question.id }}"
+                           value="D" onchange="selectOption(this)">
+                    <span class="option-label-badge" style="background:#cb4335;">D</span>
+                    <span class="option-text">{{ question.option_d }}</span>
+                </label>
+
+            </div>
+        </div>
+        {% endfor %}
+
+        <!-- Submit Section -->
+        <div class="submit-section">
+            <div class="submit-note">
+                <i class="fas fa-info-circle me-1"></i>
+                Make sure you have answered all questions before submitting.
+            </div>
+            <button type="submit" class="btn-submit"
+                    onclick="return confirm('Submit exam? You cannot change answers after submission!')">
+                <i class="fas fa-paper-plane me-2"></i>Submit Exam
+            </button>
+        </div>
+
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Highlight selected option
+    function selectOption(radio) {
+        var name = radio.name;
+        var radios = document.querySelectorAll('input[name="' + name + '"]');
+        radios.forEach(function(r) {
+            r.parentElement.classList.remove('selected');
+        });
+        radio.parentElement.classList.add('selected');
+    }
+
+    // Countdown Timer
+    const endTime = {{ end_time_timestamp }};
+
+    function updateTimer() {
+        const now = new Date().getTime();
+        const remaining = endTime - now;
+
+        if (remaining <= 0) {
+            document.getElementById('time-display').textContent = '00:00';
+            document.getElementById('examForm').submit();
+            return;
+        }
+
+        const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((remaining % (1000 * 60)) / 1000);
+        const display = String(minutes).padStart(2, '0') + ':' + String(seconds).padStart(2, '0');
+        document.getElementById('time-display').textContent = display;
+
+        if (remaining < 300000) {
+            document.getElementById('time-display').classList.add('timer-warning');
+        }
+    }
+
+    updateTimer();
+    setInterval(updateTimer, 1000);
+</script>
+{% endblock %}

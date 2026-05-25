@@ -1,0 +1,173 @@
+{% extends 'base.html' %}
+{% block title %}Review AI Questions{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+
+    <!-- Header -->
+    <div class="card p-4 mb-4 text-center"
+         style="background: linear-gradient(135deg, #667eea, #764ba2);">
+        <i class="fas fa-check-circle fa-3x text-white mb-2"></i>
+        <h3 class="fw-bold text-white">Review AI Generated Questions</h3>
+        <p class="text-white-50 mb-0">
+            Exam: <strong class="text-white">{{ exam.title }}</strong> |
+            <strong class="text-white">{{ questions|length }}</strong> questions generated
+        </p>
+    </div>
+
+    <form method="POST" action="{% url 'approve_questions' exam.id %}">
+        {% csrf_token %}
+
+        {% for q in questions %}
+        <div class="card mb-4 shadow-sm">
+
+            <!-- Card Header — NO topic line -->
+            <div class="card-header d-flex justify-content-between
+                        align-items-center"
+                 style="background:#f8f9fa;">
+                <h6 class="mb-0 fw-bold text-primary">
+                    <i class="fas fa-question-circle me-2"></i>
+                    Question {{ forloop.counter }}
+                </h6>
+                <!-- Approve Toggle -->
+                <div class="form-check form-switch mb-0">
+                    <input class="form-check-input" type="checkbox"
+                           name="approve_{{ forloop.counter0 }}"
+                           id="approve_{{ forloop.counter0 }}"
+                           value="on"
+                           checked>
+                    <label class="form-check-label fw-semibold text-success"
+                           for="approve_{{ forloop.counter0 }}">
+                        Approve
+                    </label>
+                </div>
+            </div>
+
+            <div class="card-body">
+
+                <!-- Question Text -->
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">
+                        <i class="fas fa-edit me-1 text-primary"></i>
+                        Question Text:
+                    </label>
+                    <textarea name="text_{{ forloop.counter0 }}"
+                              class="form-control" rows="2"
+                              >{{ q.text }}</textarea>
+                </div>
+
+                <!-- Options -->
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label">
+                            <span class="badge bg-primary me-1">A</span>
+                            Option A
+                        </label>
+                        <input type="text"
+                               name="option_a_{{ forloop.counter0 }}"
+                               class="form-control"
+                               value="{{ q.option_a }}">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">
+                            <span class="badge bg-success me-1">B</span>
+                            Option B
+                        </label>
+                        <input type="text"
+                               name="option_b_{{ forloop.counter0 }}"
+                               class="form-control"
+                               value="{{ q.option_b }}">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">
+                            <span class="badge bg-warning me-1">C</span>
+                            Option C
+                        </label>
+                        <input type="text"
+                               name="option_c_{{ forloop.counter0 }}"
+                               class="form-control"
+                               value="{{ q.option_c }}">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">
+                            <span class="badge bg-danger me-1">D</span>
+                            Option D
+                        </label>
+                        <input type="text"
+                               name="option_d_{{ forloop.counter0 }}"
+                               class="form-control"
+                               value="{{ q.option_d }}">
+                    </div>
+                </div>
+
+                <!-- Correct Answer -->
+                <div class="p-3 bg-light rounded">
+                    <label class="form-label fw-semibold mb-2">
+                        <i class="fas fa-check-circle me-1 text-success"></i>
+                        Correct Answer:
+                    </label>
+                    <div class="d-flex gap-4">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio"
+                                   name="correct_{{ forloop.counter0 }}"
+                                   value="A"
+                                   id="c{{ forloop.counter0 }}A"
+                                   {% if q.correct_answer == 'A' %}checked{% endif %}>
+                            <label class="form-check-label fw-bold text-primary"
+                                   for="c{{ forloop.counter0 }}A">A</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio"
+                                   name="correct_{{ forloop.counter0 }}"
+                                   value="B"
+                                   id="c{{ forloop.counter0 }}B"
+                                   {% if q.correct_answer == 'B' %}checked{% endif %}>
+                            <label class="form-check-label fw-bold text-success"
+                                   for="c{{ forloop.counter0 }}B">B</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio"
+                                   name="correct_{{ forloop.counter0 }}"
+                                   value="C"
+                                   id="c{{ forloop.counter0 }}C"
+                                   {% if q.correct_answer == 'C' %}checked{% endif %}>
+                            <label class="form-check-label fw-bold text-warning"
+                                   for="c{{ forloop.counter0 }}C">C</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio"
+                                   name="correct_{{ forloop.counter0 }}"
+                                   value="D"
+                                   id="c{{ forloop.counter0 }}D"
+                                   {% if q.correct_answer == 'D' %}checked{% endif %}>
+                            <label class="form-check-label fw-bold text-danger"
+                                   for="c{{ forloop.counter0 }}D">D</label>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        {% endfor %}
+
+        <!-- Action Buttons -->
+        <div class="row g-3 mb-5">
+            <div class="col-md-8">
+                <button type="submit"
+                        class="btn btn-success w-100 py-3 fw-bold fs-5">
+                    <i class="fas fa-check me-2"></i>
+                    Approve & Save Selected Questions
+                </button>
+            </div>
+            <div class="col-md-4">
+                <a href="{% url 'generate_questions' exam.id %}"
+                   class="btn btn-outline-warning w-100 py-3 fw-bold">
+                    <i class="fas fa-redo me-2"></i>
+                    Regenerate
+                </a>
+            </div>
+        </div>
+
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,357 @@
+{% extends 'base.html' %}
+{% block title %}Login — AI Exam System{% endblock %}
+
+{% block extra_css %}
+<style>
+    body {
+        background: #f0f4f8;
+        height: 100vh;
+        overflow: hidden;
+    }
+
+    .login-wrapper {
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        background: linear-gradient(160deg, #eaf2fb 0%, #f0f4f8 50%, #e8f5e9 100%);
+        overflow: hidden;
+    }
+
+    .login-container {
+        width: 100%;
+        max-width: 960px;
+        max-height: 96vh;
+        display: flex;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 20px 60px rgba(26, 82, 118, 0.15);
+    }
+
+    /* Left Panel */
+    .login-left {
+        flex: 1;
+        background: linear-gradient(160deg, #1a5276 0%, #2980b9 100%);
+        padding: 36px 36px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        color: white;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .login-left::before {
+        content: '';
+        position: absolute;
+        top: -60px; right: -60px;
+        width: 220px; height: 220px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.06);
+    }
+    .login-left::after {
+        content: '';
+        position: absolute;
+        bottom: -40px; left: -40px;
+        width: 160px; height: 160px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.05);
+    }
+
+    .brand-icon {
+        width: 64px; height: 64px;
+        background: rgba(255,255,255,0.15);
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+        margin-bottom: 16px;
+        backdrop-filter: blur(4px);
+        border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .brand-name {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 6px;
+        letter-spacing: -0.3px;
+    }
+
+    .brand-sub {
+        font-size: 0.85rem;
+        opacity: 0.75;
+        margin-bottom: 24px;
+        line-height: 1.5;
+    }
+
+    .feature-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 12px;
+        font-size: 0.88rem;
+    }
+
+    .feature-icon {
+        width: 36px; height: 36px;
+        background: rgba(255,255,255,0.12);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        flex-shrink: 0;
+    }
+
+    /* Right Panel */
+    .login-right {
+        flex: 1;
+        background: #ffffff;
+        padding: 36px 40px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .login-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #1a5276;
+        margin-bottom: 6px;
+    }
+
+    .login-subtitle {
+        color: #7f8c8d;
+        font-size: 0.9rem;
+        margin-bottom: 20px;
+    }
+
+    .form-label {
+        font-weight: 600;
+        font-size: 0.85rem;
+        color: #2c3e50;
+        margin-bottom: 6px;
+        letter-spacing: 0.3px;
+    }
+
+    .input-group-text {
+        background: #f4f6f9;
+        border: 1.5px solid #dce3ea;
+        border-right: none;
+        color: #7f8c8d;
+        font-size: 14px;
+    }
+
+    .form-control {
+        border: 1.5px solid #dce3ea;
+        border-left: none;
+        background: #f4f6f9;
+        font-size: 0.92rem;
+        padding: 10px 14px;
+        color: #2c3e50;
+    }
+
+    .form-control:focus {
+        border-color: #2e86c1;
+        background: #fff;
+        box-shadow: none;
+    }
+
+    .form-control:focus + .input-group-text,
+    .input-group:focus-within .input-group-text {
+        border-color: #2e86c1;
+        background: #fff;
+    }
+
+    .btn-login {
+        background: linear-gradient(135deg, #1a5276, #2980b9);
+        border: none;
+        padding: 13px;
+        font-size: 0.95rem;
+        font-weight: 600;
+        border-radius: 10px;
+        letter-spacing: 0.3px;
+        transition: all 0.3s;
+        color: white;
+        width: 100%;
+        margin-top: 8px;
+    }
+
+    .btn-login:hover {
+        background: linear-gradient(135deg, #154360, #1a5276);
+        transform: translateY(-1px);
+        box-shadow: 0 6px 20px rgba(26,82,118,0.3);
+        color: white;
+    }
+
+    .divider {
+        text-align: center;
+        color: #bdc3c7;
+        font-size: 0.8rem;
+        margin: 20px 0;
+        position: relative;
+    }
+
+    .divider::before, .divider::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        width: 42%;
+        height: 1px;
+        background: #e8ecf0;
+    }
+    .divider::before { left: 0; }
+    .divider::after { right: 0; }
+
+    .register-link {
+        text-align: center;
+        font-size: 0.88rem;
+        color: #7f8c8d;
+    }
+
+    .register-link a {
+        color: #1a5276;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+    .register-link a:hover {
+        text-decoration: underline;
+    }
+
+    .role-hint {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 16px;
+    }
+
+    .role-badge {
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        border: 1.5px solid;
+    }
+
+    .role-admin { border-color: #1a5276; color: #1a5276; background: #eaf2fb; }
+    .role-teacher { border-color: #1e8449; color: #1e8449; background: #eafaf1; }
+    .role-student { border-color: #d4ac0d; color: #b7950b; background: #fef9e7; }
+
+    @media (max-width: 768px) {
+        .login-container { flex-direction: column; }
+        .login-left { padding: 30px 25px; }
+        .login-right { padding: 30px 25px; }
+        .feature-item { display: none; }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="login-wrapper">
+    <div class="login-container">
+
+        <!-- Left Panel -->
+        <div class="login-left">
+            <div class="brand-icon">
+                <i class="fas fa-brain"></i>
+            </div>
+            <div class="brand-name">AI Examination System</div>
+            <div class="brand-sub">
+                Intelligent online examination platform<br>
+                powered by AI-driven question generation
+            </div>
+
+            <div class="feature-item">
+                <div class="feature-icon">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <span>AI-powered MCQ generation</span>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <span>Real-time countdown timer</span>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">
+                    <i class="fas fa-chart-bar"></i>
+                </div>
+                <span>Instant auto-evaluation & grades</span>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <span>Secure role-based access</span>
+            </div>
+
+        </div>
+
+        <!-- Right Panel -->
+        <div class="login-right">
+            <div class="login-title">Welcome Back</div>
+            <div class="login-subtitle">Sign in to your account to continue</div>
+
+            <div class="role-hint">
+                <span class="role-badge role-admin">Admin</span>
+                <span class="role-badge role-teacher">Teacher</span>
+                <span class="role-badge role-student">Student</span>
+            </div>
+
+            {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-danger alert-dismissible fade show py-2 mb-3"
+                 style="font-size:0.87rem; border-left: 4px solid #cb4335;">
+                <i class="fas fa-exclamation-circle me-2"></i>{{ message }}
+                <button type="button" class="btn-close btn-sm"
+                        data-bs-dismiss="alert"></button>
+            </div>
+            {% endfor %}
+            {% endif %}
+
+            <form method="POST">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label class="form-label">Username</label>
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="fas fa-user"></i>
+                        </span>
+                        <input type="text" name="username"
+                               class="form-control"
+                               placeholder="Enter your username"
+                               autofocus required>
+                    </div>
+                </div>
+                <div class="mb-4">
+                    <label class="form-label">Password</label>
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="fas fa-lock"></i>
+                        </span>
+                        <input type="password" name="password"
+                               class="form-control"
+                               placeholder="Enter your password"
+                               required>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-login">
+                    <i class="fas fa-sign-in-alt me-2"></i>Sign In
+                </button>
+            </form>
+
+            <div class="divider mt-3">or</div>
+
+            <div class="register-link">
+                Don't have an account?
+                <a href="{% url 'register' %}">Create one here</a>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

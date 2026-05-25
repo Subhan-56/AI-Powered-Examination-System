@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% block title %}My Exams{% endblock %}
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3 class="fw-bold">
+            <i class="fas fa-list text-primary me-2"></i>My Exams
+        </h3>
+        <a href="{% url 'create_exam' %}" class="btn btn-primary">
+            <i class="fas fa-plus me-2"></i>Create New Exam
+        </a>
+    </div>
+
+    {% if exams %}
+    <div class="row g-4">
+        {% for exam in exams %}
+        <div class="col-md-6">
+            <div class="card p-4 shadow-sm h-100">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <h5 class="fw-bold mb-0">{{ exam.title }}</h5>
+                    <span class="badge
+                        {% if exam.status == 'published' %}bg-success
+                        {% elif exam.status == 'draft' %}bg-warning
+                        {% else %}bg-secondary{% endif %}">
+                        {{ exam.status|capfirst }}
+                    </span>
+                </div>
+
+                <p class="text-muted small mb-3">
+                    {{ exam.description|truncatechars:80 }}
+                </p>
+
+                <div class="small text-muted mb-2">
+                    <i class="fas fa-clock me-1"></i>{{ exam.duration_minutes }} mins
+                    | <i class="fas fa-question-circle me-1"></i>{{ exam.total_questions }} questions
+                    | <i class="fas fa-star me-1"></i>{{ exam.total_marks }} marks
+                </div>
+
+                {% if exam.is_always_active %}
+                <div class="small mb-3">
+                    <span class="badge bg-success">
+                        <i class="fas fa-bolt me-1"></i>Start Anytime
+                    </span>
+                </div>
+                {% else %}
+                <div class="small text-muted mb-3">
+                    <i class="fas fa-calendar me-1"></i>
+                    {{ exam.start_time|date:"M d, Y H:i" }} —
+                    {{ exam.end_time|date:"M d, Y H:i" }}
+                </div>
+                {% endif %}
+
+                <!-- Action Buttons -->
+                <div class="d-flex flex-wrap gap-2 mt-auto">
+                    <a href="{% url 'add_question' exam.id %}"
+                       class="btn btn-sm btn-outline-primary">
+                        <i class="fas fa-plus me-1"></i>Questions
+                    </a>
+                    <a href="{% url 'edit_exam' exam.id %}"
+                       class="btn btn-sm btn-outline-warning">
+                        <i class="fas fa-edit me-1"></i>Edit
+                    </a>
+                    {% if exam.status == 'draft' %}
+                    <a href="{% url 'publish_exam' exam.id %}"
+                       class="btn btn-sm btn-success">
+                        <i class="fas fa-paper-plane me-1"></i>Publish
+                    </a>
+                    {% endif %}
+                    <a href="{% url 'exam_results' exam.id %}"
+                       class="btn btn-sm btn-outline-info">
+                        <i class="fas fa-chart-bar me-1"></i>Results
+                    </a>
+                    <a href="{% url 'delete_exam' exam.id %}"
+                       class="btn btn-sm btn-outline-danger"
+                       onclick="return confirm('Delete {{ exam.title }}?')">
+                        <i class="fas fa-trash me-1"></i>Delete
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% else %}
+    <div class="text-center mt-5">
+        <i class="fas fa-clipboard fa-4x text-muted mb-3"></i>
+        <h5 class="text-muted">No exams created yet</h5>
+        <a href="{% url 'create_exam' %}" class="btn btn-primary mt-2">
+            Create Your First Exam
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

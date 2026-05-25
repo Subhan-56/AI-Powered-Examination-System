@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% block title %}Available Exams{% endblock %}
+{% block content %}
+<div class="container mt-4">
+    <h3 class="fw-bold mb-4" style="color:#1a5276;">
+        My Exams
+    </h3>
+    {% if exam_data %}
+    <div class="row g-4">
+        {% for item in exam_data %}
+        <div class="col-md-6">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <!-- Exam Title & Status -->
+                    <div class="d-flex justify-content-between mb-2">
+                        <h5 class="fw-bold">{{ item.exam.title }}</h5>
+                        {% if item.attempted %}
+                            <span class="badge bg-success">Attempted</span>
+                        {% elif item.is_active %}
+                            <span class="badge bg-primary">Active</span>
+                        {% elif item.is_upcoming %}
+                            <span class="badge bg-warning text-dark">
+                                Upcoming
+                            </span>
+                        {% else %}
+                            <span class="badge bg-secondary">Expired</span>
+                        {% endif %}
+                    </div>
+                    <!-- Exam Info -->
+                    <div class="text-muted small mb-3">
+                        <div class="mb-1">
+                            <i class="fas fa-clock me-2"></i>
+                            Duration: {{ item.exam.duration_minutes }} minutes
+                        </div>
+                        <div class="mb-1">
+                            <i class="fas fa-question-circle me-2"></i>
+                            Questions: {{ item.exam.total_questions }}
+                        </div>
+                        <div class="mb-1">
+                            <i class="fas fa-star me-2"></i>
+                            Total Marks: {{ item.exam.total_marks }}
+                        </div>
+                        <div class="mb-1">
+                            <i class="fas fa-calendar-alt me-2"></i>
+                            {{ item.exam.start_time|date:"M d, Y H:i" }} —
+                            {{ item.exam.end_time|date:"H:i" }}
+                        </div>
+                    </div>
+                    <!-- Action Button -->
+                    {% if item.attempted %}
+                        <a href="{% url 'view_result' item.attempt.id %}"
+                           class="btn btn-success w-100">
+                            <i class="fas fa-chart-bar me-2"></i>
+                            View Result
+                            ({{ item.attempt.score }}/{{ item.attempt.total_marks }})
+                        </a>
+                    {% elif item.is_active %}
+                        <a href="{% url 'start_exam' item.exam.id %}"
+                           class="btn btn-primary w-100">
+                            <i class="fas fa-play me-2"></i>
+                            Start Exam
+                        </a>
+                    {% elif item.is_upcoming %}
+                        <button class="btn btn-warning w-100" disabled>
+                            <i class="fas fa-clock me-2"></i>
+                            Starts at {{ item.exam.start_time|date:"H:i" }}
+                        </button>
+                    {% else %}
+                        <button class="btn btn-secondary w-100" disabled>
+                            <i class="fas fa-times me-2"></i>
+                            Exam Expired
+                        </button>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center mt-5">
+        <i class="fas fa-clipboard fa-4x text-muted mb-3"></i>
+        <h5 class="text-muted">No exams assigned yet</h5>
+        <p class="text-muted">Your teacher will assign exams soon.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

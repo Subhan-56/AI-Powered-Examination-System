@@ -1,0 +1,196 @@
+{% extends 'base.html' %}
+{% block title %}Exam Result{% endblock %}
+
+{% block extra_css %}
+<style>
+    .result-wrapper {
+        max-width: 680px;
+        margin: 0 auto;
+    }
+
+    .result-card {
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 8px 40px rgba(0,0,0,0.12);
+        margin-bottom: 24px;
+    }
+
+    .result-header {
+        padding: 36px 32px 28px;
+        text-align: center;
+        color: white;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .result-header::before {
+        content: '';
+        position: absolute;
+        top: -50px; right: -50px;
+        width: 180px; height: 180px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.07);
+    }
+    .result-header::after {
+        content: '';
+        position: absolute;
+        bottom: -30px; left: -30px;
+        width: 120px; height: 120px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.05);
+    }
+
+    .exam-name {
+        font-size: 1.3rem;
+        font-weight: 700;
+        margin-bottom: 4px;
+    }
+
+    .exam-label {
+        font-size: 0.85rem;
+        opacity: 0.75;
+        margin-bottom: 24px;
+    }
+
+    .grade-circle {
+        width: 100px; height: 100px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.18);
+        border: 3px solid rgba(255,255,255,0.35);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+        font-size: 2.6rem;
+        font-weight: 800;
+        backdrop-filter: blur(4px);
+    }
+
+    .score-text {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 4px;
+    }
+
+    .percent-text {
+        font-size: 1.1rem;
+        opacity: 0.8;
+        margin-bottom: 12px;
+    }
+
+    .result-message {
+        font-size: 0.95rem;
+        opacity: 0.9;
+        padding: 10px 20px;
+        background: rgba(255,255,255,0.12);
+        border-radius: 30px;
+        display: inline-block;
+        margin-bottom: 8px;
+    }
+
+    .stats-row {
+        display: flex;
+        border-top: 1px solid rgba(255,255,255,0.15);
+        margin-top: 20px;
+    }
+
+    .stat-item {
+        flex: 1;
+        padding: 16px 12px;
+        text-align: center;
+    }
+
+    .stat-item + .stat-item {
+        border-left: 1px solid rgba(255,255,255,0.15);
+    }
+
+    .stat-num {
+        font-size: 1.6rem;
+        font-weight: 700;
+        margin-bottom: 4px;
+    }
+
+    .stat-lbl {
+        font-size: 0.78rem;
+        opacity: 0.7;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    /* Grade-based colors */
+    .grade-aplus { background: linear-gradient(135deg, #145a32, #1e8449); }
+    .grade-a     { background: linear-gradient(135deg, #1a5276, #2980b9); }
+    .grade-b     { background: linear-gradient(135deg, #1f618d, #2e86c1); }
+    .grade-c     { background: linear-gradient(135deg, #9a7d0a, #d4ac0d); }
+    .grade-d     { background: linear-gradient(135deg, #a04000, #d35400); }
+    .grade-f     { background: linear-gradient(135deg, #922b21, #cb4335); }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="result-wrapper">
+
+        <div class="result-card">
+            <div class="result-header
+                {% if grade == 'A+' %}grade-aplus
+                {% elif grade == 'A' %}grade-a
+                {% elif grade == 'B' %}grade-b
+                {% elif grade == 'C' %}grade-c
+                {% elif grade == 'D' %}grade-d
+                {% else %}grade-f{% endif %}">
+
+                <div class="exam-name">{{ attempt.exam.title }}</div>
+                <div class="exam-label">
+                    <i class="fas fa-certificate me-1"></i>Examination Result
+                </div>
+
+                <div class="grade-circle">{{ grade }}</div>
+
+                <div class="score-text">
+                    {{ attempt.score }} / {{ attempt.total_marks }}
+                </div>
+                <div class="percent-text">{{ percentage }}%</div>
+
+                <div class="result-message">
+                    {% if grade == 'A+' %}<i class="fas fa-trophy me-1"></i>
+                    {% elif grade == 'A' or grade == 'B' %}<i class="fas fa-check-circle me-1"></i>
+                    {% elif grade == 'C' or grade == 'D' %}<i class="fas fa-exclamation-circle me-1"></i>
+                    {% else %}<i class="fas fa-times-circle me-1"></i>
+                    {% endif %}
+                    {{ result_message }}
+                </div>
+
+                <div class="stats-row">
+                    <div class="stat-item">
+                        <div class="stat-num">{{ answers|length }}</div>
+                        <div class="stat-lbl">Total Questions</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-num" style="color:#a9dfbf;">
+                            {{ attempt.score|floatformat:0 }}
+                        </div>
+                        <div class="stat-lbl">Correct</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-num" style="color:#f1948a;">
+                            {{ wrong }}
+                        </div>
+                        <div class="stat-lbl">Wrong</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Back Button -->
+        <div class="text-center">
+            <a href="{% url 'available_exams' %}"
+               class="btn btn-primary px-5 py-2 fw-semibold"
+               style="border-radius:10px;">
+                <i class="fas fa-arrow-left me-2"></i>Back to My Exams
+            </a>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,186 @@
+{% extends 'base.html' %}
+{% block title %}Student Dashboard{% endblock %}
+
+{% block extra_css %}
+<style>
+    .welcome-banner {
+        background: linear-gradient(135deg, #1a5276 0%, #2980b9 100%);
+        border-radius: 16px;
+        padding: 28px 32px;
+        color: white;
+        position: relative;
+        overflow: hidden;
+    }
+    .welcome-banner::after {
+        content: '\f19d';
+        font-family: 'Font Awesome 6 Free';
+        font-weight: 900;
+        position: absolute;
+        right: 30px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 80px;
+        opacity: 0.08;
+    }
+    .avatar-circle {
+        width: 58px; height: 58px;
+        background: rgba(255,255,255,0.2);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        border: 2px solid rgba(255,255,255,0.3);
+        flex-shrink: 0;
+    }
+    .dash-card {
+        border-radius: 14px;
+        border: none;
+        box-shadow: 0 2px 15px rgba(0,0,0,0.07);
+        transition: transform 0.25s, box-shadow 0.25s;
+        overflow: hidden;
+        height: 100%;
+    }
+    .dash-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 28px rgba(0,0,0,0.12);
+    }
+    .card-top-bar {
+        height: 5px;
+        width: 100%;
+    }
+    .card-body-inner {
+        padding: 28px 24px;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .card-icon-wrap {
+        width: 60px; height: 60px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+        margin-bottom: 16px;
+    }
+    .card-title-text {
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: #1c2833;
+        margin-bottom: 6px;
+    }
+    .card-desc {
+        font-size: 0.83rem;
+        color: #7f8c8d;
+        margin-bottom: 20px;
+        line-height: 1.5;
+    }
+    .card-btn {
+        padding: 9px 24px;
+        border-radius: 8px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        border: none;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        transition: all 0.2s;
+        margin-top: auto;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+
+    <!-- Welcome Banner -->
+    <div class="welcome-banner mb-4">
+        <div class="d-flex align-items-center gap-3">
+            <div class="avatar-circle">
+                <i class="fas fa-user-graduate"></i>
+            </div>
+            <div>
+                <h4 class="fw-bold mb-1">
+                    Welcome, {{ user.first_name|default:user.username }}!
+                </h4>
+                <div style="opacity:0.8; font-size:0.88rem;">
+                    <i class="fas fa-graduation-cap me-1"></i>
+                    Student Portal &mdash; AI Examination System
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cards Row -->
+    <div class="row g-4">
+
+        <!-- My Exams -->
+        <div class="col-md-4">
+            <div class="dash-card">
+                <div class="card-top-bar" style="background:#1a5276;"></div>
+                <div class="card-body-inner">
+                    <div class="card-icon-wrap" style="background:#eaf2fb;">
+                        <i class="fas fa-file-alt" style="color:#1a5276;"></i>
+                    </div>
+                    <div class="card-title-text">My Exams</div>
+                    <div class="card-desc">
+                        View and attempt your assigned examinations
+                    </div>
+                    <a href="{% url 'available_exams' %}"
+                       class="card-btn"
+                       style="background:linear-gradient(135deg,#1a5276,#2980b9);color:white;">
+                        <i class="fas fa-arrow-right"></i> View Exams
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- My Results -->
+        <div class="col-md-4">
+            <div class="dash-card">
+                <div class="card-top-bar" style="background:#1e8449;"></div>
+                <div class="card-body-inner">
+                    <div class="card-icon-wrap" style="background:#eafaf1;">
+                        <i class="fas fa-chart-line" style="color:#1e8449;"></i>
+                    </div>
+                    <div class="card-title-text">My Results</div>
+                    <div class="card-desc">
+                        Check your exam scores, grades and performance
+                    </div>
+                    <a href="{% url 'available_exams' %}"
+                       class="card-btn"
+                       style="background:linear-gradient(135deg,#1e8449,#27ae60);color:white;">
+                        <i class="fas fa-arrow-right"></i> View Results
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- My Profile -->
+        <div class="col-md-4">
+            <div class="dash-card">
+                <div class="card-top-bar" style="background:#2e86c1;"></div>
+                <div class="card-body-inner">
+                    <div class="card-icon-wrap" style="background:#eaf4fb;">
+                        <i class="fas fa-user-circle" style="color:#2e86c1;"></i>
+                    </div>
+                    <div class="card-title-text">My Profile</div>
+                    <div class="card-desc">
+                        Update your personal information and account settings
+                    </div>
+                    <a href="{% url 'profile' %}"
+                       class="card-btn"
+                       style="background:linear-gradient(135deg,#1f618d,#2e86c1);color:white;">
+                        <i class="fas fa-arrow-right"></i> View Profile
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,166 @@
+{% extends 'base.html' %}
+{% block title %}AI Question Generator{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+
+            <!-- Header Card -->
+            <div class="card p-4 mb-4 text-center"
+                 style="background: linear-gradient(135deg, #667eea, #764ba2);">
+                <i class="fas fa-robot fa-3x text-white mb-3"></i>
+                <h3 class="fw-bold text-white">AI Question Generator</h3>
+                <p class="text-white-50 mb-0">
+                    Exam: <strong class="text-white">{{ exam.title }}</strong>
+                </p>
+            </div>
+
+            <!-- Form Card -->
+            <div class="card p-4">
+                <form method="POST">
+                    {% csrf_token %}
+
+                    <!-- Topic Input -->
+                    <div class="mb-4">
+                        <label class="form-label fw-bold fs-6">
+                            <i class="fas fa-book me-2 text-primary"></i>
+                            Topic / Subject
+                        </label>
+                        <input type="text"
+                               name="topic"
+                               class="form-control form-control-lg"
+                               placeholder="e.g. Python Functions, Django Models, OOP"
+                               maxlength="100"
+                               required>
+                        <div class="form-text">
+                            <i class="fas fa-info-circle me-1 text-info"></i>
+                            <strong>Tip:</strong> Enter short topic name only 
+                                 (e.g. "Python Lists" not a paragraph)
+                        </div>
+                    </div>
+
+                    <!-- Number of Questions -->
+                    <div class="mb-4">
+                        <label class="form-label fw-bold fs-6">
+                            <i class="fas fa-list-ol me-2 text-primary"></i>
+                            Number of Questions
+                        </label>
+                        <div class="row g-2">
+                            <div class="col-3">
+                                <input type="radio" class="btn-check"
+                                       name="num_questions" value="3" id="q3">
+                                <label class="btn btn-outline-primary w-100" for="q3">
+                                    3
+                                </label>
+                            </div>
+                            <div class="col-3">
+                                <input type="radio" class="btn-check"
+                                       name="num_questions" value="5" id="q5" checked>
+                                <label class="btn btn-outline-primary w-100" for="q5">
+                                    5
+                                </label>
+                            </div>
+                            <div class="col-3">
+                                <input type="radio" class="btn-check"
+                                       name="num_questions" value="7" id="q7">
+                                <label class="btn btn-outline-primary w-100" for="q7">
+                                    7
+                                </label>
+                            </div>
+                            <div class="col-3">
+                                <input type="radio" class="btn-check"
+                                       name="num_questions" value="10" id="q10">
+                                <label class="btn btn-outline-primary w-100" for="q10">
+                                    10
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Generation Mode -->
+                    <div class="mb-4">
+                        <label class="form-label fw-bold fs-6">
+                            <i class="fas fa-cog me-2 text-primary"></i>
+                            Generation Mode
+                        </label>
+                        <div class="row g-3">
+
+                            <!-- Quick Mode -->
+                            <div class="col-md-6">
+                                <input type="radio" class="btn-check"
+                                       name="use_ai" value="simple"
+                                       id="simple" checked>
+                                <label class="btn btn-outline-warning w-100 h-100 p-3
+                                              text-start" for="simple">
+                                    <div class="fw-bold mb-1">
+                                        ⚡ Hugging Face Quick
+                                    </div>
+                                    <small class="text-muted d-block">
+                                        Fast NLP-based generation
+                                    </small>
+                                    <small class="text-muted d-block">
+                                        Instant results — edit after
+                                    </small>
+                                    <span class="badge bg-success mt-2">
+                                        Recommended
+                                    </span>
+                                </label>
+                            </div>
+
+                            <!-- Advanced Mode -->
+                            <div class="col-md-6">
+                                <input type="radio" class="btn-check"
+                                       name="use_ai" value="advanced"
+                                       id="advanced">
+                                <label class="btn btn-outline-secondary w-100 h-100 p-3
+                                              text-start" for="advanced">
+                                    <div class="fw-bold mb-1">
+                                        🤖 Hugging Face T5
+                                    </div>
+                                    <small class="text-muted d-block">
+                                        Deep learning T5 model
+                                    </small>
+                                    <small class="text-muted d-block">
+                                        First run slow (downloads model)
+                                    </small>
+                                    <span class="badge bg-warning text-dark mt-2">
+                                        Slow First Time
+                                    </span>
+                                </label>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- Info Box -->
+                    <div class="alert alert-info d-flex align-items-center mb-4">
+                        <i class="fas fa-lightbulb me-3 fs-5"></i>
+                        <div>
+                            <strong>Tip:</strong> After generation you can
+                            <strong>edit</strong> any question, option, or
+                            correct answer before approving!
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit"
+                            class="btn btn-warning w-100 py-3 fw-bold fs-5">
+                        <i class="fas fa-magic me-2"></i>
+                        Generate Questions with AI
+                    </button>
+
+                    <!-- Back Button -->
+                    <a href="{% url 'add_question' exam.id %}"
+                       class="btn btn-outline-secondary w-100 mt-3">
+                        <i class="fas fa-arrow-left me-2"></i>
+                        Back to Add Questions
+                    </a>
+
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

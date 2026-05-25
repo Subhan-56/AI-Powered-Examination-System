@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+{% block title %}Create Exam{% endblock %}
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card p-4">
+                <h3 class="fw-bold mb-4">
+                    <i class="fas fa-plus-circle text-primary me-2"></i>Create New Exam
+                </h3>
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Exam Title</label>
+                        <input type="text" name="title" class="form-control"
+                               placeholder="e.g. Python Programming Mid Term" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Description</label>
+                        <textarea name="description" class="form-control" rows="3"
+                                  placeholder="Brief description of this exam"></textarea>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">Duration (minutes)</label>
+                        <input type="number" name="duration_minutes" class="form-control"
+                               value="30" min="5" max="180" required>
+                    </div>
+
+                    <!-- Exam Timing Option -->
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">Exam Timing</label>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <input type="radio" class="btn-check"
+                                       name="timing_type" value="scheduled"
+                                       id="scheduled" checked>
+                                <label class="btn btn-outline-primary w-100 p-3 text-start"
+                                       for="scheduled">
+                                    <div class="fw-bold">
+                                        <i class="fas fa-calendar me-1"></i>Scheduled
+                                    </div>
+                                    <small class="text-muted">
+                                        Start aur end time set karo
+                                    </small>
+                                </label>
+                            </div>
+                            <div class="col-md-6">
+                                <input type="radio" class="btn-check"
+                                       name="timing_type" value="anytime"
+                                       id="anytime">
+                                <label class="btn btn-outline-success w-100 p-3 text-start"
+                                       for="anytime">
+                                    <div class="fw-bold">
+                                        <i class="fas fa-bolt me-1"></i>Start Anytime
+                                    </div>
+                                    <small class="text-muted">
+                                        Student kabhi bhi start kare
+                                    </small>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Scheduled Times -->
+                    <div id="scheduled_times">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-semibold">Start Time</label>
+                                <input type="datetime-local" name="start_time"
+                                       class="form-control">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-semibold">End Time</label>
+                                <input type="datetime-local" name="end_time"
+                                       class="form-control">
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100 py-2 fw-semibold">
+                        <i class="fas fa-arrow-right me-2"></i>Create & Add Questions
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.querySelectorAll('input[name="timing_type"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+            const scheduledDiv = document.getElementById('scheduled_times');
+            if (this.value === 'anytime') {
+                scheduledDiv.style.display = 'none';
+            } else {
+                scheduledDiv.style.display = 'block';
+            }
+        });
+    });
+</script>
+{% endblock %}
+
+

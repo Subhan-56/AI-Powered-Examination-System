@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block title %}Publish Exam{% endblock %}
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card p-4">
+                <h3 class="fw-bold mb-2">
+                    <i class="fas fa-paper-plane text-success me-2"></i>Publish Exam
+                </h3>
+                <p class="text-muted mb-4">Exam: <strong>{{ exam.title }}</strong> 
+                   | Questions: <strong>{{ exam.total_questions }}</strong></p>
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">
+                            Assign Students (Select one or more)
+                        </label>
+                        <div class="border rounded p-3" style="max-height:300px; overflow-y:auto;">
+                            {% for student in students %}
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" 
+                                       name="students" value="{{ student.id }}" 
+                                       id="student{{ student.id }}">
+                                <label class="form-check-label" for="student{{ student.id }}">
+                                    <i class="fas fa-user me-1"></i>
+                                    {{ student.get_full_name|default:student.username }}
+                                    ({{ student.username }})
+                                </label>
+                            </div>
+                            {% empty %}
+                            <p class="text-muted">No students registered yet.</p>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-success w-100 py-2 fw-semibold">
+                        <i class="fas fa-check me-2"></i>Publish Exam Now
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
